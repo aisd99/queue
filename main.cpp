@@ -186,10 +186,10 @@ int main()
 	std::string buf;
 	std::cin >> buf;
 	ifstream in;
-	in.open(buf, ios::in);
+	in.open(buf + ".txt", ios::in);
 	std::cin >> buf;
 	ofstream out;
-	out.open(buf, ios::out);
+	out.open(buf + ".txt", ios::out);
 	Queue<int> Queue(out);
 	Queue.CommandManager(in, out);
 	in.close();
