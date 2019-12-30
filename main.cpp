@@ -190,5 +190,5 @@ int main(int argc, char **argv)
 	Queue<std::string> Queue(out); 
 	Queue.CommandManager(in, out); 
 	in.close();
-	out.close()
+	out.close();
 }
