@@ -1,17 +1,19 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <fstream>
 
-#define _ERROR_ std::cout << "error" << std::endl;
+#define _ERROR_(os) os << "error" << std::endl;
 
 using namespace std;
 template<typename T>
 class Queue {
 public:
-	Queue();
-	Queue(size_t new_capacity);
+	Queue(ostream& _output);
+	Queue(ostream& _output, size_t new_capacity);
 	~Queue();
 
+	void CommandManager(istream& input, ostream& output);
 	void CommandManager();
 	void Push(const T& item);
 	void Pop();
@@ -22,13 +24,14 @@ private:
 	int _capacity = 0;
 	int _head = -1;
 	int _tail = -1;
+	ostream& output = std::cout;
 };
 
 template<typename T>
-Queue<T>::Queue() {}
+Queue<T>::Queue(ostream& _output) : output(_output) {}
 
 template<typename T>
-Queue<T>::Queue(size_t new_capacity) {
+Queue<T>::Queue(ostream& _output, size_t new_capacity) : output(_output) {
 	values = new T[new_capacity];
 	_capacity = new_capacity;
 }
@@ -39,9 +42,9 @@ Queue<T>::~Queue() {
 }
 
 template<typename T>
-void Queue<T>::CommandManager() {
+void Queue<T>::CommandManager(istream& input, ostream& _output) {
 	bool notallocated = true;
-	for (std::string line; std::getline(std::cin, line); ) {
+	for (std::string line; std::getline(input, line); ) {
 		std::istringstream is(line);
 		std::string command;
 		is >> command;
@@ -55,10 +58,10 @@ void Queue<T>::CommandManager() {
 				is >> new_size;
 				std::string add;
 				is >> add;
-				if (add != "") _ERROR_
+				if (add != "") _ERROR_(output)
 				else SetSize(new_size);
 			}
-			else _ERROR_
+			else _ERROR_(output)
 		}
 		else if (!(notallocated)) {
 			if (command == "push") {
@@ -66,7 +69,7 @@ void Queue<T>::CommandManager() {
 				is >> new_item;
 				std::string add;
 				is >> add;
-				if (add != "") _ERROR_
+				if (add != "") _ERROR_(output)
 				else Push(new_item);
 			}
 			else if (line == command) {
@@ -77,13 +80,19 @@ void Queue<T>::CommandManager() {
 					Print();
 				}
 				else if (command.size() > 0) {
-					_ERROR_
+					_ERROR_(output)
 				}
 			}
-			else _ERROR_
+			else _ERROR_(output)
 		}
-		else _ERROR_
+		else _ERROR_(output)
 	}
+}
+
+template<typename T>
+void Queue<T>::CommandManager()
+{
+	CommandManager(std::cin, std::cout);
 }
 
 template<typename T>
@@ -92,7 +101,7 @@ void Queue<T>::Push(const T& item)
 	if ((_head == 0 && _tail == _capacity - 1) ||
 		(_tail == (_head - 1) % (_capacity - 1)))
 	{
-		std::cout << "overflow" << std::endl;
+		output << "overflow" << std::endl;
 		return;
 	}
 
@@ -120,7 +129,7 @@ void Queue<T>::Pop()
 {
 	if (_head == -1)
 	{
-		std::cout << "underflow" << std::endl;
+		output << "underflow" << std::endl;
 		return;
 	}
 
@@ -136,7 +145,7 @@ void Queue<T>::Pop()
 	else
 		_head++;
 
-	std::cout << data << std::endl;
+	output << data << std::endl;
 }
 
 template<typename T>
@@ -144,25 +153,25 @@ void Queue<T>::Print()
 {
 	if (_head == -1)
 	{
-		std::cout << "empty" << std::endl;
+		output << "empty" << std::endl;
 		return;
 	}
 	if (_tail >= _head)
 	{
 		for (int i = _head; i < _tail; i++) {
-			std::cout << values[i] << " ";
+			output << values[i] << " ";
 		}
-		std::cout << values[_tail] << std::endl;
+		output << values[_tail] << std::endl;
 	}
 	else
 	{
 		for (int i = _head; i < _capacity; i++)
-			std::cout << values[i] << " ";
+			output << values[i] << " ";
 
 		for (int i = 0; i < _tail; i++) {
-			std::cout << values[i] << " ";
+			output << values[i] << " ";
 		}
-		std::cout << values[_tail] << std::endl;
+		output << values[_tail] << std::endl;
 	}
 }
 
@@ -174,6 +183,15 @@ void Queue<T>::SetSize(size_t new_capacity) {
 
 int main()
 {
-	Queue<int> Queue;
-	Queue.CommandManager();
+	std::string buf;
+	std::cin >> buf;
+	ifstream in;
+	in.open(buf, ios::in);
+	std::cin >> buf;
+	ofstream out;
+	out.open(buf, ios::out);
+	Queue<int> Queue(out);
+	Queue.CommandManager(in, out);
+	in.close();
+	out.close();
 }
