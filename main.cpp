@@ -133,7 +133,7 @@ void Queue<T>::Pop()
 		return;
 	}
 
-	int data = values[_head];
+	T data = values[_head];
 	values[_head] = -1;
 	if (_head == _tail)
 	{
@@ -181,12 +181,16 @@ void Queue<T>::SetSize(size_t new_capacity) {
 	_capacity = new_capacity;
 }
 
-int main(int argc, char **argv){
+int main()
+{
+	std::string buf;
+	std::cin >> buf;
 	ifstream in;
-	in.open(argv[1], ios::in);
+	in.open(buf, ios::in);
+	std::cin >> buf;
 	ofstream out;
-	out.open(argv[2], ios::out);
-	Queue<int> Queue(out);
+	out.open(buf, ios::out);
+	Queue<std::string> Queue(out);
 	Queue.CommandManager(in, out);
 	in.close();
 	out.close();
