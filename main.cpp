@@ -181,15 +181,11 @@ void Queue<T>::SetSize(size_t new_capacity) {
 	_capacity = new_capacity;
 }
 
-int main()
-{
-	std::string buf;
-	std::cin >> buf;
+int main(int argc, char **argv){
 	ifstream in;
-	in.open(buf + ".txt", ios::in);
-	std::cin >> buf;
+	in.open(argv[1], ios::in);
 	ofstream out;
-	out.open(buf + ".txt", ios::out);
+	out.open(argv[2], ios::out);
 	Queue<int> Queue(out);
 	Queue.CommandManager(in, out);
 	in.close();
