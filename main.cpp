@@ -19,8 +19,8 @@ public:
 	void Print();
 private:
 	T* values = NULL;
-	size_t _capacity = 0;
-	int _head = 0;
+	int _capacity = 0;
+	int _head = -1;
 	int _tail = -1;
 };
 
@@ -87,23 +87,82 @@ void Queue<T>::CommandManager() {
 }
 
 template<typename T>
-void Queue<T>::Push(const T& item) {
-	if (_tail == _capacity - 1) {
+void Queue<T>::Push(const T& item)
+{
+	if ((_head == 0 && _tail == _capacity - 1) ||
+		(_tail == (_head - 1) % (_capacity - 1)))
+	{
 		std::cout << "overflow" << std::endl;
+		return;
 	}
-	else {
-		values[++_tail] = item;
+
+	else if (_head == -1)
+	{
+		_head = _tail = 0;
+		values[_tail] = item;
+	}
+
+	else if (_tail == _capacity - 1 && _head != 0)
+	{
+		_tail = 0;
+		values[_tail] = item;
+	}
+
+	else
+	{
+		_tail++;
+		values[_tail] = item;
 	}
 }
 
 template<typename T>
-void Queue<T>::Pop() {
-	if (_tail == -1) {
+void Queue<T>::Pop()
+{
+	if (_head == -1)
+	{
 		std::cout << "underflow" << std::endl;
+		return;
 	}
-	else {
-		cout << values[_head] << std::endl;
-		++_head;
+
+	int data = values[_head];
+	values[_head] = -1;
+	if (_head == _tail)
+	{
+		_head = -1;
+		_tail = -1;
+	}
+	else if (_head == _capacity - 1)
+		_head = 0;
+	else
+		_head++;
+
+	std::cout << data << std::endl;
+}
+
+template<typename T>
+void Queue<T>::Print()
+{
+	if (_head == -1)
+	{
+		std::cout << "empty" << std::endl;
+		return;
+	}
+	if (_tail >= _head)
+	{
+		for (int i = _head; i < _tail; i++) {
+			std::cout << values[i] << " ";
+		}
+		std::cout << values[_tail] << std::endl;
+	}
+	else
+	{
+		for (int i = _head; i < _capacity; i++)
+			std::cout << values[i] << " ";
+
+		for (int i = 0; i < _tail; i++) {
+			std::cout << values[i] << " ";
+		}
+		std::cout << values[_tail] << std::endl;
 	}
 }
 
@@ -111,19 +170,6 @@ template<typename T>
 void Queue<T>::SetSize(size_t new_capacity) {
 	values = new T[new_capacity];
 	_capacity = new_capacity;
-}
-
-template<typename T>
-void Queue<T>::Print() {
-	if (_tail == -1) {
-		std::cout << "empty";
-	}
-	else {
-		for (size_t i = _head; i <= _tail; ++i) {
-			std::cout << values[i] << " ";
-		}
-	}
-	std::cout << std::endl;
 }
 
 int main()
