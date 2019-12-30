@@ -2,10 +2,10 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+using namespace std;
 
 #define _ERROR_(os) os << "error" << std::endl;
 
-using namespace std;
 template<typename T>
 class Queue {
 public:
@@ -181,17 +181,14 @@ void Queue<T>::SetSize(size_t new_capacity) {
 	_capacity = new_capacity;
 }
 
-int main()
+int main(int argc, char **argv)
 {
-	std::string buf;
-	std::cin >> buf;
-	ifstream in;
-	in.open(buf, ios::in);
-	std::cin >> buf;
-	ofstream out;
-	out.open(buf, ios::out);
-	Queue<std::string> Queue(out);
-	Queue.CommandManager(in, out);
+	ifstream in; 
+	in.open(argv[1], ios::in); 
+	ofstream out; 
+	out.open(argv[2], ios::out); 
+	Queue<std::string> Queue(out); 
+	Queue.CommandManager(in, out); 
 	in.close();
-	out.close();
+	out.close()
 }
